@@ -1,6 +1,7 @@
 /*
-You need to install these modules first using npm
+This script using NodeJS will decrypt a Pi Network Passphrase to keys
 
+You need to install these modules first using npm
 npm install stellar-sdk @hawkingnetwork/ed25519-hd-key-rn bip39 readline
 
 */
