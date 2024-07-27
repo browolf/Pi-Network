@@ -9,6 +9,8 @@ npm install stellar-sdk @hawkingnetwork/ed25519-hd-key-rn bip39 readline
 
 This script creates a Pi Network Passphrase with keys. Wallet needs to be registered on the network using the new wallet script. 
 
+(if you didn't already need to install the modules as above)
+
 # new_wallet.py
 
 This script using Python and stellar-sdk module can create a new wallet with keys using the secret key you got from decode
