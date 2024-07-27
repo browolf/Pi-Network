@@ -6,7 +6,7 @@ choose_server = input("choose testnet 1)Stellar or 2)Pi? or 3)Pi Mainnet ")
 # Horizon server and network passphrase
 if (choose_server == "1"):
     horizon_server = "https://horizon-testnet.stellar.org"
-    network_passphrase = "Test SDF Network ; September 2015xx"
+    network_passphrase = "Test SDF Network ; September 2015"
     base_fee = 100
     starting_balance = "1"
 elif (choose_server == "2"):
@@ -25,9 +25,18 @@ else:
     sys.exit()                
 
 # Generate a new keypair for the new account
-new_keypair = Keypair.random()
-print(f"New Account Public Key: {new_keypair.public_key}")
-print(f"New Account Secret: {new_keypair.secret}")
+choose_keypair = input ("1. Random keypair, 2. Got your own? ")
+if (choose_keypair == "1"):
+    new_keypair = Keypair.random()
+    print(f"New Account Public Key: {new_keypair.public_key}")
+    print(f"New Account Secret: {new_keypair.secret}")
+elif (choose_keypair =="2"):
+    secret_key = input("Enter the secret key of the new account: ")
+    new_keypair = Keypair.from_secret(secret_key)
+else:
+    print("Did not recognise choice")
+    sys.exit()     
+
 
 # Load the existing account
 server = Server(horizon_server)
@@ -54,7 +63,6 @@ transaction.sign(existing_keypair)
 try:
     response = server.submit_transaction(transaction)
     print("Transaction successful!")
-    print(response)
 except exceptions.BadRequestError as e:
     result_codes = e.extras.get('result_codes', None)
     print("Transaction failed with result codes:")
