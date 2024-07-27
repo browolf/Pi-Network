@@ -1,4 +1,4 @@
-#use this script to verify the secret key works. 
+#use this script to verify a secret key works. 
 
 from stellar_sdk import Keypair, Server, TransactionBuilder, Account, exceptions
 import sys
