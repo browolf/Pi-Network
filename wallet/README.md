@@ -19,7 +19,7 @@ You can either get a random wallet or use the wallet from create.js - recommend 
 
 # Verify_account.py
 
-Use this script to verify the secret key works. 
+Use this script to verify a secret key works. 
 
 # Notes
 
