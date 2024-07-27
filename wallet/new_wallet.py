@@ -13,7 +13,7 @@ elif (choose_server == "2"):
     horizon_server = "https://api.testnet.minepi.com"
     network_passphrase = "Pi Testnet"
     base_fee = 1000000
-    starting_balance = "10"
+    starting_balance = "20"
     print("Need more than 20 to do transaction")
 elif (choose_server =="3"):
     horizon_server = "https://api.mainnet.minepi.com"
