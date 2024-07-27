@@ -17,7 +17,7 @@ You need a minium amount of coins to perform this operation and you will get an 
 
 You can either get a random wallet or use the wallet from create.js - recommend this method as you get the passphrase as well. 
 
-# Verify_account.py
+# Verify_secret.py
 
 Use this script to verify a secret key works. 
 
