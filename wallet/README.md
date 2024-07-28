@@ -13,9 +13,9 @@ This script creates a Pi Network Passphrase with keys. Wallet needs to be regist
 
 # new_wallet.py
 
-This script using Python and stellar-sdk module can create a new wallet with keys using a secret key. 
+You need to decode your own wallet passphrase in order to use the keys to create another wallet.  
 
-You need a minium amount of coins to perform this operation and you will get an error if you don't have enough in the base wallet. 
+You need more than 40 coins to perform this operation and you will get an error if you don't have enough in the base wallet. 
 
 You can either get a random wallet or use the wallet from create.js - recommend this method as you get the passphrase as well. 
 
