@@ -1,6 +1,16 @@
 from stellar_sdk import Keypair, Server, TransactionBuilder, exceptions
 import sys
 
+'''
+This script would create a mainnet wallet if the operation wasn't blocked
+
+Inputs: 
+1. secret key of the new wallet
+2. secret key of your existing wallet
+
+A sucessful operation returns a json that contains the transaction hash + other things
+
+'''
 
 horizon_server = "https://api.mainnet.minepi.com"
 network_passphrase = "Pi Network"
