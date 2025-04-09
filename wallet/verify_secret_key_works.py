@@ -1,5 +1,8 @@
-#use this script to verify a secret key works. 
+'''
+use this script to verify a secret key works. 
+this works by changing the home_domain of the account
 
+'''
 from stellar_sdk import Keypair, Server, TransactionBuilder, Account, exceptions
 import sys
 
@@ -81,31 +84,31 @@ if __name__ == "__main__":
     wallet = input("Enter the public key of the wallet: ")
     secret_to_check=input("Enter the new secret key you want to check? ")
 
-choose_server = input("choose testnet 1)Stellar or 2)Pi? or 3)Pi Mainnet ")
+    choose_server = input("choose testnet 1)Stellar or 2)Pi? or 3)Pi Mainnet ")
 
-# Horizon server and network passphrase
-if (choose_server == "1"):
-    horizon_server = "https://horizon-testnet.stellar.org"
-    network_passphrase = "Test SDF Network ; September 2015"
-    base_fee = 100
-    starting_balance = "1"
-elif (choose_server == "2"):
-    horizon_server = "https://api.testnet.minepi.com"
-    network_passphrase = "Pi Testnet"
-    base_fee = 1000000
-    starting_balance = "10"
-    print("Need more than 20 to do transaction")
-elif (choose_server =="3"):
-    horizon_server = "https://api.mainnet.minepi.com"
-    network_passphrase = "Pi Network"
-    base_fee = 1000000
-    starting_balance = "1"
-else:
-    print("Did not recognise choice")
-    sys.exit()     
+    # Horizon server and network passphrase
+    if (choose_server == "1"):
+        horizon_server = "https://horizon-testnet.stellar.org"
+        network_passphrase = "Test SDF Network ; September 2015"
+        base_fee = 100
+        starting_balance = "1"
+    elif (choose_server == "2"):
+        horizon_server = "https://api.testnet.minepi.com"
+        network_passphrase = "Pi Testnet"
+        base_fee = 1000000
+        starting_balance = "10"
+        print("Need more than 20 to do transaction")
+    elif (choose_server =="3"):
+        horizon_server = "https://api.mainnet.minepi.com"
+        network_passphrase = "Pi Network"
+        base_fee = 1000000
+        starting_balance = "1"
+    else:
+        print("Did not recognise choice")
+        sys.exit()     
 
-is_valid = check_signature(secret_to_check,wallet)
-if is_valid:
-    print("A transaction signed with this key was successful")
+    is_valid = check_signature(secret_to_check,wallet)
+    if is_valid:
+        print("A transaction signed with this key was successful")
        
 
