@@ -23,4 +23,8 @@ You can either get a random wallet or use the wallet from create.js - recommend 
 
 Use this script to verify a secret key works. 
 
+# TEST_create_pi_mainnet_wallet.py
+
+Would create a mainnet wallet if the operation wasn't blocked through the api.
+
 
