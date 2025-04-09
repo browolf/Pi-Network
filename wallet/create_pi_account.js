@@ -1,3 +1,17 @@
+/*
+This script creates a new valid Pi account of passphrase and associated keys
+
+Inputs:
+(none)
+
+Outputs: 
+1. Passphrase (Mnemonic)
+2. Private key
+3. Secret key
+
+*/
+
+
 const Stellar = require('stellar-sdk');
 const { derivePath } = require("@hawkingnetwork/ed25519-hd-key-rn");
 const bip39 = require("bip39");
