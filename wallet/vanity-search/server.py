@@ -44,7 +44,7 @@ def handle_client(conn, addr, suffix):
                     except (ValueError, IndexError):
                         print(f"[{ip}] [{thread_name}] Could not parse attempt count.")
                 else:
-                    print(f"[{ip}] [{thread_name}] {data}")
+                    print(f"[{ip}] {data}")
 
                 if data.startswith("✅ MATCH FOUND"):
                     found = True
