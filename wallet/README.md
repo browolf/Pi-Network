@@ -23,6 +23,4 @@ You can either get a random wallet or use the wallet from create.js - recommend 
 
 Use this script to verify a secret key works. 
 
-# Notes
 
-I don't have a mainnet wallet to ensure it works there. 
