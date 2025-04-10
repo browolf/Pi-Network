@@ -16,6 +16,7 @@ Notes:
 1. Difficult ramps up exponentially. Expect at least 1 billion attempts for a 6 char suffix. You don't need to run the program in one go. There's basically a zero chance of retesting the same attempt. 
 2. If you are running the client on windows, need to install visual studio community edition, "Desktop development with C++" before you can install the bip_utils module.  I can't remember if it manages itself on ubuntu. 
 3. Due the way threads report attempts there's not a smooth continuous output. 
+4. These are the only valid characters: ABCDEFGHIJKLMNOPQRSTUVWXYZ234567
 '''
 
 
