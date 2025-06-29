@@ -1,21 +1,8 @@
 '''
-the operation that created the claimable balance does not contain the actual balance_id.
-
-To get the claimable balance ID, you must follow the _links.effects URL:
-
-https://api.mainnet.minepi.com/operations/<transactionid}/effects
-
-look for an effect like this 
-
-{
-  "type": "claimable_balance_created",
-  "balance_id": "0000000080896050f2643dd0d8f068c4bd2a4098966d54db53c62fd8b79b733c860eeda9",
-  ...
-}
-
 Input: your private key
+Add the claimable balance operation id to the code and it will find the correct balance_id 
 
-Output: when it works you get a big json response. check the e
+Output: when it works you get a big json response. check the explorer to see your pi returned
 
 '''
 
@@ -24,7 +11,7 @@ import requests
 
 
 # Constants
-BALANCE_OPERATION_ID = "92031335153065985"
+BALANCE_OPERATION_ID = "92030335153065985"
 
 
 
@@ -45,7 +32,7 @@ def get_real_claimable_balance_id(operation_id):
     raise Exception("No claimable balance created in this operation.")
 
 def main():
-    # Ask for the secret key securely
+    # Ask for the secret key
     secret_key = input("Enter your Stellar secret key: ").strip()
     
     # Create keypair and connect to server
