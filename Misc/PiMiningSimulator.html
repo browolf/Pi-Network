@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pi Mining Simulator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 500px;
+      margin: auto;
+    }
+    .slider-group {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .output {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pi Mining to Earn $1 in 30 Days</h1>
+
+  <div class="slider-group">
+    <label for="rate">Mining Rate (Pi/hour): <span id="rateVal">0.0030</span></label>
+    <input type="range" id="rate" min="0.001" max="1" step="0.001" value="0.0030">
+  </div>
+
+  <div class="output">
+    To mine $1 in 30 days:<br>
+    You must value Pi at: <strong>$<span id="value">0.000000</span></strong> per Pi
+  </div>
+
+  <script>
+    const rateSlider = document.getElementById('rate');
+    const rateVal = document.getElementById('rateVal');
+    const valueDisplay = document.getElementById('value');
+
+    function update() {
+      const rate = parseFloat(rateSlider.value);
+      rateVal.textContent = rate.toFixed(4);
+
+      const hoursIn30Days = 30 * 24;
+      const piMined = rate * hoursIn30Days;
+      const piValue = 1 / piMined;
+
+      valueDisplay.textContent = piValue.toFixed(6);
+    }
+
+    rateSlider.addEventListener('input', update);
+    update(); // Initial calculation
+  </script>
+</body>
+</html>
