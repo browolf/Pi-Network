@@ -1,0 +1,80 @@
+#! /usr/bin/env bash
+# This is a rewritten start script to what normally comes with PCT's container
+set -euo pipefail
+
+# ---- Paths (all mapped outside the container) ----
+export STELLAR_HOME="/opt/stellar"
+export PGHOME="$STELLAR_HOME/postgresql"
+export PGDATA="$PGHOME/data"
+export PGBIN="/usr/lib/postgresql/12/bin"
+
+# ---- Auth/user settings ----
+# note postgres password here
+export PGUSER_APP="stellar"
+export PGPORT=5432
+: "${POSTGRES_PASSWORD:=<password>}"   # fallback if not set
+
+echo ""
+echo "Starting minimal bootstrap (Postgres only)"
+echo "PGDATA: $PGDATA"
+
+# Ensure dirs exist with correct perms
+mkdir -p "$PGDATA"
+chmod 700 "$PGDATA"
+chown -R postgres:postgres "$PGDATA"
+
+# Ensure .pgpass for non-interactive psql
+mkdir -p "$PGHOME"
+umask 077
+echo "localhost:$PGPORT:*:$PGUSER_APP:$POSTGRES_PASSWORD" > "$PGHOME/.pgpass"
+chmod 600 "$PGHOME/.pgpass"
+chown postgres:postgres "$PGHOME/.pgpass"
+
+# Initialize cluster if needed
+if [ ! -f "$PGDATA/PG_VERSION" ]; then
+  echo "Initializing Postgres cluster..."
+  su -s /bin/bash postgres -c "$PGBIN/initdb -D $PGDATA"
+fi
+
+# Start Postgres as postgres user
+echo "Starting Postgres..."
+su -s /bin/bash postgres -c "$PGBIN/postgres -D $PGDATA" &
+
+# Wait until ready using app user + .pgpass
+echo "Waiting for Postgres to accept connections..."
+until PGPASSFILE="$PGHOME/.pgpass" su -s /bin/bash postgres -c "psql -U $PGUSER_APP -h localhost -tAc 'select 1'" >/dev/null 2>&1; do
+  # If app user not created yet, test with postgres superuser
+  if su -s /bin/bash postgres -c "psql -U postgres -h localhost -tAc 'select 1'" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+echo "Postgres is up."
+
+# Create databases + app user if missing
+echo "Ensuring core/horizon DBs and user..."
+su -s /bin/bash postgres -c "psql -U postgres -h localhost -tc \"SELECT 1 FROM pg_roles WHERE rolname = '$PGUSER_APP'\"" | grep -q 1 || \
+  su -s /bin/bash postgres -c "psql -U postgres -h localhost -c \"CREATE USER $PGUSER_APP WITH PASSWORD '$POSTGRES_PASSWORD';\""
+
+for db in core horizon; do
+  su -s /bin/bash postgres -c "psql -U postgres -h localhost -tc \"SELECT 1 FROM pg_database WHERE datname = '$db'\"" | grep -q 1 || \
+    su -s /bin/bash postgres -c "createdb -U postgres -h localhost $db"
+  su -s /bin/bash postgres -c "psql -U postgres -h localhost -c \"GRANT ALL PRIVILEGES ON DATABASE $db TO $PGUSER_APP;\""
+done
+
+echo ""
+echo "Minimal bootstrap complete (Postgres ready)."
+# Keep container running (no supervisor/core/horizon yet)
+# auto-start core & horizon
+if ! pgrep -f "stellar-core.*--conf" >/dev/null; then
+  su -s /bin/bash stellar -c "nohup stellar-core --conf /opt/stellar/core/etc/stellar-core.cfg run >/opt/stellar/core/logs/start.out 2>&1 &"
+fi
+for i in {1..120}; do curl -sf http://127.0.0.1:11626/info >/dev/null && break || sleep 1; done
+if ! pgrep -f "/usr/bin/stellar-horizon" >/dev/null; then
+  su -s /bin/bash stellar -c "source /opt/stellar/horizon/etc/horizon.env; nohup /usr/bin/stellar-horizon serve --port 8001 >> /opt/stellar/horizon/logs/horizon.out 2>&1 &"
+fi
+tail -F /opt/stellar/core/logs/start.out /opt/stellar/horizon/logs/horizon.out
+EOF
+
+chmod +x /mnt/pinode/pinode-stack/start
+
