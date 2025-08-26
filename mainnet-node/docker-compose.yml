@@ -1,0 +1,20 @@
+services:
+  pinode:
+    image: pinetwork/pi-node-docker:organization_mainnet-v1.1-p19.6
+    container_name: pinode
+    restart: unless-stopped
+    environment:
+      TZ: Europe/London
+      POSTGRES_PASSWORD: "<password>"
+    volumes:
+      - /mnt/pinode/pinode-stack/start:/start:ro
+      - /mnt/pinode/postgres:/opt/stellar/postgresql
+      - /mnt/pinode/core:/opt/stellar/core
+      - /mnt/pinode/horizon:/opt/stellar/horizon
+      - /mnt/pinode/tmp:/tmp
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "11625:11625"
+      - "11626:11626"
