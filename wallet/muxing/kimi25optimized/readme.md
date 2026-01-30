@@ -1,7 +1,7 @@
 1. generate crc
 2. create search config
 
-3. python suffix\_hunter\suffix_hunter_optimized.py (--workers 4 --priority idle)
+3. python suffix_hunter_optimized.py (--workers 4 --priority idle)
 
 
 
