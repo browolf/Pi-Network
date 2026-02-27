@@ -1,5 +1,6 @@
 '''
 This script will find PI/USDT markets on ccxt and display the current price
+created by https://x.com/PiNetworkUpdate
 '''
 
 
