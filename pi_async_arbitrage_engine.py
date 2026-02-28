@@ -16,9 +16,9 @@ from datetime import datetime
 # ===============================
 
 TARGET_SYMBOL = "PI/USDT"
-SPREAD_ALERT_PERCENT = 3.0        # Alert jika spread > 3%
-ARBITRAGE_CAPITAL = 1000          # Modal simulasi (USDT)
-CHECK_INTERVAL = 30               # Detik
+SPREAD_ALERT_PERCENT = 3.0
+ARBITRAGE_CAPITAL = 1000
+CHECK_INTERVAL = 30
 TELEGRAM_TOKEN = "YOUR_BOT_TOKEN"
 TELEGRAM_CHAT_ID = "YOUR_CHAT_ID"
 
@@ -31,16 +31,13 @@ async def send_telegram(message):
         return
 
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message
-    }
+    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
 
     async with aiohttp.ClientSession() as session:
         await session.post(url, data=payload)
 
 # ===============================
-# FETCH TICKER ASYNC
+# FETCH TICKER + MARKET INFO
 # ===============================
 
 async def fetch_price(exchange_id):
@@ -61,11 +58,19 @@ async def fetch_price(exchange_id):
             return None
 
         ticker = await exchange.fetch_ticker(TARGET_SYMBOL)
+        market = exchange.markets[TARGET_SYMBOL]
+
         await exchange.close()
 
         price = ticker.get("last")
         if price:
-            return (exchange_id, float(price))
+            return {
+                "exchange": exchange_id,
+                "price": float(price),
+                "type": market.get("type"),
+                "spot": market.get("spot"),
+                "active": market.get("active")
+            }
 
     except Exception:
         return None
@@ -81,11 +86,11 @@ def calculate_arbitrage(low_price, high_price):
     return round(profit, 2)
 
 # ===============================
-# AI INTELLIGENCE INTEGRATION
+# AI INTELLIGENCE
 # ===============================
 
 def generate_intelligence_report(results):
-    prices = [price for _, price in results]
+    prices = [r["price"] for r in results]
     avg_price = statistics.mean(prices)
     volatility = statistics.pstdev(prices)
 
@@ -108,7 +113,6 @@ async def main_loop():
 
         tasks = [fetch_price(exchange_id) for exchange_id in ccxt.exchanges]
         results = await asyncio.gather(*tasks)
-
         results = [r for r in results if r is not None]
 
         if not results:
@@ -116,40 +120,50 @@ async def main_loop():
             await asyncio.sleep(CHECK_INTERVAL)
             continue
 
-        results.sort(key=lambda x: x[1])
+        results.sort(key=lambda x: x["price"])
 
         lowest = results[0]
         highest = results[-1]
 
-        spread_percent = ((highest[1] - lowest[1]) / lowest[1]) * 100
+        spread_percent = ((highest["price"] - lowest["price"]) / lowest["price"]) * 100
         spread_percent = round(spread_percent, 2)
 
-        profit = calculate_arbitrage(lowest[1], highest[1])
+        profit = calculate_arbitrage(lowest["price"], highest["price"])
 
-        print(f"Lowest  : {lowest[0]} @ {lowest[1]}")
-        print(f"Highest : {highest[0]} @ {highest[1]}")
-        print(f"Spread  : {spread_percent}%")
-        print(f"Simulated Profit (1000 USDT): {profit} USDT")
+        print("\n=== MARKET DETAIL ===")
+        for r in results:
+            print(
+                f"{r['exchange']} | "
+                f"Price: {r['price']} | "
+                f"Type: {r['type']} | "
+                f"Spot: {r['spot']} | "
+                f"Active: {r['active']}"
+            )
 
-        # Intelligence
+        print("\n=== ARBITRAGE ===")
+        print(f"Buy  : {lowest['exchange']} @ {lowest['price']}")
+        print(f"Sell : {highest['exchange']} @ {highest['price']}")
+        print(f"Spread : {spread_percent}%")
+        print(f"Profit (1000 USDT): {profit} USDT")
+
         intel = generate_intelligence_report(results)
+        print("\n=== INTELLIGENCE ===")
         print(f"Avg Price: {intel['average_price']}")
         print(f"Volatility: {intel['volatility']}")
         print(f"Exchanges Found: {intel['exchange_count']}")
 
-        # Telegram Alert
         if spread_percent >= SPREAD_ALERT_PERCENT:
             message = (
                 f"🚨 PI Arbitrage Alert!\n\n"
-                f"Buy: {lowest[0]} @ {lowest[1]}\n"
-                f"Sell: {highest[0]} @ {highest[1]}\n"
+                f"Buy: {lowest['exchange']} @ {lowest['price']}\n"
+                f"Sell: {highest['exchange']} @ {highest['price']}\n"
                 f"Spread: {spread_percent}%\n"
-                f"Profit (1000 USDT): {profit} USDT"
+                f"Profit: {profit} USDT"
             )
             await send_telegram(message)
 
         elapsed = round(time.time() - start_time, 2)
-        print(f"Scan completed in {elapsed}s")
+        print(f"\nScan completed in {elapsed}s")
 
         await asyncio.sleep(CHECK_INTERVAL)
 
