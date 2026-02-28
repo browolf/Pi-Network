@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PI Market Scanner</title>
+</head>
+<body>
+    <h2>PI/USDT Global Scanner</h2>
+    <button onclick="scan()">Scan Market</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function scan() {
+            const res = await fetch("http://127.0.0.1:8000/scan");
+            const data = await res.json();
+            document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
