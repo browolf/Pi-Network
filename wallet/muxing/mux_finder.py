@@ -1,5 +1,4 @@
 '''
-Each wallet has approx 4 billion possible muxed addresses.  
 This program searches the the entire address space for addresses ending in words using multithreads to speed up the search. 
 
 Input:  Your Pi Wallet public address starting with G
