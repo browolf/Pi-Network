@@ -25,33 +25,8 @@
 # Requirements:
 #   Python 3.9+
 #   requests
-#
-# Installation:
-#   pip install requests
-#
-# Usage:
-#   python pi_operations.py
-#
-#   Enter the Pi wallet address when prompted.
-#   If a previous CSV exists, choose to resume or overwrite.
-#
 # Output:
 #   operations_<WALLET_ADDRESS>.csv
-#
-# API:
-#   https://api.mainnet.minepi.com
-#
-# Notes:
-#   - Uses publicly accessible blockchain data.
-#   - Does not require wallet private keys or authentication.
-#   - Historical coverage depends on Horizon data availability.
-#   - Payment amounts and directions may not apply to all operation types.
-#   - Memos belong to transactions and require transaction data to be joined.
-#
-# Disclaimer:
-#   This is an independent, open-source blockchain analysis utility.
-#   It is not affiliated with or endorsed by Pi Network.
-#
 # =============================================================================
 
 
